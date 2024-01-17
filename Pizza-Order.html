@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <title>Pizza Order Form</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+      }
+      
+      form {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.46);
+        width: 400px;
+        max-width: 100%;
+      }
+      label {
+        display: block;
+        margin: 5px 0;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #5087ff;
+        color: #fff;
+        padding: 13px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      button:hover {
+      background-color: #3360c3; 
+    }
+
+      .pizza-form {
+        background-color: #f8f8f8;
+        margin: 10px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        color: #555;
+      }
+
+      .pizza-fields fieldset {
+        margin: 10px 0;
+      }
+
+      .pizza-field-label {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #555;
+      }
+
+      .topping-checkbox {
+        margin-right: 8px;
+      }
+
+      .checkbox-label {
+        display: inline-block;
+        width: auto;
+      }
+
+      .topping-checkbox-label,
+      .inline-label {
+        display: inline-block;
+      }
+
+      .bold-font {
+        font-weight: 600;
+      }
+
+      #submit_text {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pizza-form">
+      <form method="post" id="pizzaForm" onsubmit="submitForm(event)">
+        <label for="quantity" class="bold-font">Number of Pizzas:</label>
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          min="1"
+          required
+          oninput="showPizzaFields(this.value)"
+        >
+
+        <div class="pizza-fields" id="pizzaFields">
+          <!-- dynamically generate pizza related fields according to number of pizzas -->
+        </div>
+
+        <label for="firstName" class="bold-font">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required >
+
+        <label for="lastName" class="bold-font">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required >
+
+        <label for="email" class="bold-font">Email Address:</label>
+        <input type="email" id="email" name="email" required >
+
+        <label for="phone" class="bold-font">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required >
+
+        <label for="street" class="bold-font">Street Number and Name:</label>
+        <input type="text" id="street" name="street" required >
+
+        <button type="submit" class="submit-button" id="submit_button">
+          Place Order
+        </button>
+        <div class="submit-text">
+          <p id="submit_text">Form Submitted!</p>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      
+      function showPizzaFields(quantity) {
+        const pizzaFieldsContainer = document.getElementById("pizzaFields");
+        pizzaFieldsContainer.innerHTML = "";
+
+        for (let i = 1; i <= quantity; i++) {
+          const pizzaFieldSet = document.createElement("fieldset");
+          pizzaFieldSet.innerHTML = `
+          <legend>Pizza ${i}</legend>
+
+          <label class="pizza-field-label bold-font" for="size${i}">Pizza Size:</label>
+          <select id="size${i}" name="size${i}" required>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+
+          <div>
+            <div class="radio-group">
+                <span class="pizza-field-label bold-font">Dough Type:</span>
+                <label>
+                    <input type="radio" name="dough${i}" value="thin" required class="checkbox-label">
+                    Thin
+                </label>
+                <label>
+                    <input type="radio" name="dough${i}" value="thick" required class="checkbox-label">
+                    Thick
+                </label>
+        </div>
+        </div>
+
+        <label class="pizza-field-label bold-font">Base Cheese:</label>
+          <div>
+            <input type="checkbox" id="cheeseMozzarella${i}" name="cheese${i}[]" class="checkbox-label" value="mozzarella">
+            <label for="cheeseMozzarella${i}" class="inline-label">Mozzarella</label>
+        </div>
+        <div>
+            <input type="checkbox" id="cheeseCheddar${i}" name="cheese${i}[]" class="checkbox-label" value="cheddar">
+            <label for="cheeseCheddar${i}" class="inline-label">Cheddar</label>
+         </div> 
+
+         <label class="pizza-field-label bold-font">Sauce Type:</label>
+          <div>
+            <input type="checkbox" id="tomatoauce${i}" name="sauce${i}[]" class="checkbox-label" value="Tomato">
+            <label for="tomatoauce${i}" class="inline-label">Tomato</label>
+        </div>
+        <div>
+            <input type="checkbox" id="pestoSauce${i}" name="sauce${i}[]" class="checkbox-label" value="Pesto">
+            <label for="pestoSauce${i}" class="inline-label">Pesto</label>
+          </div>
+
+          <label class="pizza-field-label bold-font" for="toppings${i}">Toppings:</label>
+
+          <div>
+            <div class="pepperoni-div">
+                <input type="checkbox" id="pepperoni${i}" name="toppings${i}[]" class="checkbox-label" value="pepperoni">
+                <label for="pepperoni${i}" class="topping-checkbox-label">Pepperoni</label>
+            </div>
+            <div class="mushrooms-div">
+                <input type="checkbox" id="mushrooms${i}" name="toppings${i}[]" class="checkbox-label" value="mushrooms">
+                <label for="mushrooms${i}" class="topping-checkbox-label">Mushrooms</label>
+            </div>
+            
+            <div class="sausage-div">
+                <input type="checkbox" id="sausage${i}" name="toppings${i}[]" class="checkbox-label" value="sausage">
+                <label for="sausage${i}" class="topping-checkbox-label">Sausage</label>
+            </div>
+            
+            <div class="chicken-div">
+                <input type="checkbox" id="chicken${i}" name="toppings${i}[]" class="checkbox-label" value="chicken">
+                <label for="chicken${i}" class="topping-checkbox-label">Chicken</label>
+            </div>
+           
+            <div class="olives-div">
+                <input type="checkbox" id="olives${i}" name="toppings${i}[]" class="checkbox-label" value="olives">
+                <label for="olives${i}" class="topping-checkbox-label">Olives</label>
+            </div>
+           
+            <div class="tomatoes-div">
+                <input type="checkbox" id="tomatoes${i}" name="toppings${i}[]" class="checkbox-label" value="tomatoes">
+                <label for="tomatoes${i}" class="topping-checkbox-label">Tomatoes</label>
+            </div>
+            <div class="bacon-div">
+                <input type="checkbox" id="bacon${i}" name="toppings${i}[]" class="checkbox-label" value="bacon">
+                <label for="bacon${i}" class="topping-checkbox-label">Bacon Strips</label>
+            </div>
+          </div>
+        `;
+
+          pizzaFieldsContainer.appendChild(pizzaFieldSet);
+        }
+
+        pizzaFieldsContainer.style.display = quantity > 0 ? "block" : "none";
+      }
+
+      const submitButton = document.getElementById("submit_button");
+      const submitText = document.getElementById("submit_text");
+      const formfields = document.getElementById("pizzaForm");
+      
+      submitForm = (e) => {
+        // To prevent default action
+        e.preventDefault();
+
+        // Conirmation text
+        submitText.style.display = "block";
+
+        // Reset all fields
+        formfields.reset();
+      };
+    </script>
+  </body>
+</html>
